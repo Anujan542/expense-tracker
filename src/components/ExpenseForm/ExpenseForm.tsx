@@ -12,7 +12,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -32,13 +31,13 @@ export const ExpenseForm = ({
 }: ExpenseFormProps) => {
   const { mutate, isPending } = useCreateExpense();
   const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState<number | undefined>(undefined);
   const [category, setCategory] = useState<Category>("Other");
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [notes, setNotes] = useState("");
 
-  const categories = ["All", "Food", "Travel", "Shopping"];
+  const categories = ["Food", "Travel", "Shopping"];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +118,6 @@ export const ExpenseForm = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
                     {categories.map((c) => (
                       <SelectItem value={c}>{c}</SelectItem>
                     ))}
@@ -132,9 +130,6 @@ export const ExpenseForm = ({
                 onChange={(e) => setNotes(e.target.value)}
               />
               <div className="flex justify-end gap-2">
-                <Button variant="ghost" onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
                 <Button
                   className="w-full cursor-pointer"
                   disabled={isPending || title === "" || amount === 0}

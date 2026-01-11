@@ -1,6 +1,7 @@
 import { useDeleteExpense } from "../../hooks/useDeleteExpense";
 import { ExpenseItem } from "../ExpenseItem/ExpenseItem";
 import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 import type { ExpenseListProps } from "./ExpenseList.types";
 
 export const ExpenseList = ({
@@ -23,12 +24,22 @@ export const ExpenseList = ({
         ))}
       </ul>
 
-      {isLoading && <p>Loading...</p>}
+      {isLoading && (
+        <div className="flex items-center justify-center">
+          <Spinner className="size-6" />
+        </div>
+      )}
 
       {hasMore && !isLoading && (
-        <Button variant="outline" className="w-full" onClick={onLoadMore}>
-          Load More
-        </Button>
+        <div className="flex items-center justify-center">
+          <Button
+            variant="default"
+            className="cursor-pointer"
+            onClick={onLoadMore}
+          >
+            Load More
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -6,6 +6,7 @@ import { FilterExpense } from "../../components/FilterExpense/FilterExpense";
 import { useInfiniteExpenses } from "../../hooks/useInfiniteExpenses";
 import { useOfflineSync } from "../../hooks/useOfflineSync";
 import { selectFilteredExpenses } from "../../redux/expenses/expensesSelectors";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DashboardProps {
   openAddExpense: boolean;
@@ -27,7 +28,11 @@ const Dashboard = ({ openAddExpense, setOpenAddExpense }: DashboardProps) => {
   } = useInfiniteExpenses();
 
   if (isLoading) {
-    return <p>Loading expenses...</p>;
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner className="size-6" />
+      </div>
+    );
   }
 
   if (isError) {
