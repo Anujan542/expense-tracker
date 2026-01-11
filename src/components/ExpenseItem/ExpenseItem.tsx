@@ -1,7 +1,10 @@
-// src/components/ExpenseItem/ExpenseItem.tsx
-import { useState } from 'react';
-import type { Expense } from '../../types/expenseTypes';
-import { useUpdateExpense } from '../../hooks/useUpdateExpense';
+import { useState } from "react";
+import { Card, CardContent } from "../ui/card";
+import { Button } from "@/components/ui/button";
+import type { Expense } from "../../types/expenseTypes";
+import { Badge } from "../ui/badge";
+import { ExpenseEditForm } from "../ExpenseForm/ExpenseEditForm";
+import { format } from "date-fns";
 
 interface Props {
   expense: Expense;
@@ -9,50 +12,52 @@ interface Props {
 }
 
 export const ExpenseItem = ({ expense, onDelete }: Props) => {
-  const { mutate: updateExpense } = useUpdateExpense();
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(expense.title);
-  const [amount, setAmount] = useState(expense.amount);
-
-  const handleSave = () => {
-    updateExpense({
-      ...expense,
-      title,
-      amount,
-      updatedAt: new Date().toISOString(),
-    });
-    setIsEditing(false);
-  };
 
   if (isEditing) {
     return (
-      <li>
-        <input
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-        <input
-          type="number"
-          value={amount}
-          onChange={e => setAmount(Number(e.target.value))}
-        />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={() => setIsEditing(false)}>
-          Cancel
-        </button>
-      </li>
+      <ExpenseEditForm
+        expense={expense}
+        openEditExpense={isEditing}
+        setOpenEditExpense={setIsEditing}
+      />
     );
   }
 
   return (
-    <li>
-      <strong>{expense.title}</strong> — ${expense.amount}
-      <button onClick={() => setIsEditing(true)}>
-        Edit
-      </button>
-      <button onClick={() => onDelete(expense.id)}>
-        Delete
-      </button>
-    </li>
+    <>
+      <div className="mb-4">
+        <Card>
+          <CardContent className="flex justify-between items-start p-1">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">{expense.title}</h3>
+                <Badge variant="secondary">{expense.category}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {format(new Date(expense.date), "MMM dd, yyyy")}
+              </p>
+              <p className="text-sm">
+                {expense.notes ? expense.notes : "No notes"}
+              </p>
+            </div>
+            <div className="text-left space-y-2">
+              <p className="text-lg font-bold">${expense.amount}</p>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setIsEditing(true)}>
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => onDelete(expense.id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 };

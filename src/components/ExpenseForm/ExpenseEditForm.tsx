@@ -1,5 +1,4 @@
-import { useCreateExpense } from "../../hooks/useCreateExpense";
-import { v4 as uuid } from "uuid";
+
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Category, Expense } from "../../types/expenseTypes";
@@ -16,59 +15,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
+import { useUpdateExpense } from "../../hooks/useUpdateExpense";
 
-interface ExpenseFormProps {
-  openAddExpense: boolean;
-  setOpenAddExpense: (open: boolean) => void;
+
+interface ExpenseEditFormProps {
+    expense: Expense;
+    openEditExpense: boolean;
+    setOpenEditExpense: (open: boolean) => void;
 }
 
-export const ExpenseForm = ({
-  openAddExpense,
-  setOpenAddExpense,
-}: ExpenseFormProps) => {
-  const { mutate, isPending } = useCreateExpense();
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState<Category>("Other");
+export const ExpenseEditForm = ({ expense, openEditExpense, setOpenEditExpense }: ExpenseEditFormProps) => {
+  const { mutate: updateExpense,isPending } = useUpdateExpense();
+
+  const [title, setTitle] = useState(expense.title);
+  const [amount, setAmount] = useState(expense.amount);
+  const [category, setCategory] = useState<Category>(expense.category);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(expense.notes);
 
   const categories = ["All", "Food", "Travel", "Shopping"];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const expense: Expense = {
-      id: uuid(),
+  const handleSave = () => {
+    updateExpense({
+      ...expense,
       title,
-      amount: Number(amount),
+      amount,
+      category,
       date: date?.toISOString() ?? new Date().toISOString(),
-      category: category,
-      notes: notes || "",
-      createdAt: new Date().toISOString(),
+      notes,
       updatedAt: new Date().toISOString(),
-    };
-    mutate(expense);
-    setTitle("");
-    setNotes("");
-    setCategory("Other");
-    setAmount(0);
-    setOpenAddExpense(false);
+    });
+    setOpenEditExpense(false);
   };
 
   return (
     <>
-      <Dialog open={openAddExpense} onOpenChange={setOpenAddExpense}>
+      <Dialog open={openEditExpense} onOpenChange={setOpenEditExpense}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Expense</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <Input
                 required
@@ -138,12 +134,13 @@ export const ExpenseForm = ({
                 <Button
                   className="w-full cursor-pointer"
                   disabled={isPending || title === "" || amount === 0}
+                  onClick={handleSave}
                 >
-                  Add Expense
+                  Update Expense
                 </Button>
               </div>
             </div>
-          </form>
+          {/* </form> */}
         </DialogContent>
       </Dialog>
     </>

@@ -1,5 +1,6 @@
 import { useDeleteExpense } from "../../hooks/useDeleteExpense";
 import { ExpenseItem } from "../ExpenseItem/ExpenseItem";
+import { Button } from "../ui/button";
 import type { ExpenseListProps } from "./ExpenseList.types";
 
 export const ExpenseList = ({
@@ -12,16 +13,8 @@ export const ExpenseList = ({
 
   return (
     <div>
-      {/* <ul>
+      <ul>
         {expenses.map((expense) => (
-          <li key={expense.id}>
-            <strong>{expense.title}</strong> — ${expense.amount}
-            <button onClick={() => deleteExpense(expense.id)}>Delete</button>
-          </li>
-        ))}
-      </ul> */}
-       <ul>
-        {expenses.map(expense => (
           <ExpenseItem
             key={expense.id}
             expense={expense}
@@ -32,7 +25,11 @@ export const ExpenseList = ({
 
       {isLoading && <p>Loading...</p>}
 
-      {hasMore && !isLoading && <button onClick={onLoadMore}>Load More</button>}
+      {hasMore && !isLoading && (
+        <Button variant="outline" className="w-full" onClick={onLoadMore}>
+          Load More
+        </Button>
+      )}
     </div>
   );
 };

@@ -1,32 +1,34 @@
+import { useState } from "react";
+
+import { Card, CardHeader, CardTitle } from "./components/ui/card";
+import { Button } from "./components/ui/button";
+
 import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
+  const [openAddExpense, setOpenAddExpense] = useState(false);
   return (
     <>
-       <section className="py-12 md:py-20">
-            <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
-                <div className="relative z-10 mx-auto max-w-xl space-y-6 text-center">
-                    <h2 className="text-4xl font-medium lg:text-5xl">Expense Tracker</h2>
-                </div>
-
-                <div className="">
-                   <Dashboard />
-                    {/* <div className="space-y-4">
-                        <div className="text-5xl font-bold">+1200</div>
-                        <p>Stars on GitHub</p>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="text-5xl font-bold">22 Million</div>
-                        <p>Active Users</p>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="text-5xl font-bold">+500</div>
-                        <p>Powered Apps</p>
-                    </div> */}
-                </div>
+      <div className="min-h-screen bg-background p-6 space-y-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl">💸 Expense Tracker</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Track your daily spending
+              </p>
             </div>
-        </section>
-     
+            <Button onClick={() => setOpenAddExpense(true)}>
+              + Add Expense
+            </Button>
+          </CardHeader>
+        </Card>
+
+        <Dashboard
+          openAddExpense={openAddExpense}
+          setOpenAddExpense={setOpenAddExpense}
+        />
+      </div>
     </>
   );
 }
